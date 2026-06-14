@@ -61,8 +61,13 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body>
         <div className="site-frame" data-locale={locale}>
+          <a className="skip-link" href="#main-content">
+            {locale === "gl" ? "Saltar ao contido" : "Saltar al contenido"}
+          </a>
           <Header locale={locale} />
-          <main>{children}</main>
+          <main id="main-content" tabIndex={-1}>
+            {children}
+          </main>
           <Footer locale={locale} />
         </div>
       </body>
