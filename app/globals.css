@@ -1316,6 +1316,36 @@ a {
   border-top: 1px solid var(--line-dark);
 }
 
+.not-found {
+  min-height: calc(100svh - 78px);
+  display: grid;
+  place-content: center;
+  justify-items: start;
+  padding-block: 80px;
+}
+
+.not-found > span {
+  color: var(--gold);
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-size: clamp(120px, 25vw, 320px);
+  line-height: 0.8;
+}
+
+.not-found h1 {
+  margin: 28px 0 0;
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-size: clamp(48px, 8vw, 100px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.not-found p {
+  margin: 20px 0 30px;
+  color: var(--muted-dark);
+}
+
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr auto;

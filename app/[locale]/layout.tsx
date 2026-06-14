@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "../globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
@@ -9,6 +9,11 @@ import { siteConfig } from "@/lib/site";
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
+
+export const viewport: Viewport = {
+  colorScheme: "dark",
+  themeColor: "#f4cd22",
+};
 
 export async function generateMetadata({
   params,
