@@ -2,6 +2,8 @@
 
 Web publica bilingue, independente do panel legacy.
 
+Repositorio: https://github.com/Ivan-Mourazos/santiso-web
+
 ## Arquitectura
 
 - Next.js 16 App Router + React 19.
