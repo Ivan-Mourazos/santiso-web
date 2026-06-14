@@ -16,7 +16,10 @@ SELECT
 FROM public.competiciones competition
 WHERE competition.activa;
 
-CREATE OR REPLACE VIEW public.public_match_cards
+-- 001 creates a smaller bootstrap projection. Recreate it because PostgreSQL
+-- cannot change existing view column names or order with CREATE OR REPLACE.
+DROP VIEW IF EXISTS public.public_match_cards;
+CREATE VIEW public.public_match_cards
 WITH (security_invoker = true)
 AS
 SELECT

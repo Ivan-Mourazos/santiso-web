@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CategoryTabs } from "@/components/category-tabs";
 import { Crest } from "@/components/crest";
 import { DataEmpty } from "@/components/data-empty";
 import { PageHero } from "@/components/page-hero";
@@ -27,8 +28,10 @@ export async function generateMetadata({
 
 export default async function StandingsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ categoria?: string }>;
 }) {
   const locale = await readLocale(params);
   const gl = locale === "gl";
@@ -36,6 +39,20 @@ export default async function StandingsPage({
     getCompetitions(),
     getStandings(),
   ]);
+  const categories = ["Senior", "Femenino", "Veteranos"].filter((category) =>
+    competitions.some(
+      (competition) =>
+        competition.categoria === category && competition.formato !== "eliminatoria",
+    ),
+  );
+  const query = await searchParams;
+  const activeCategory =
+    categories.find(
+      (category) => category.toLowerCase() === query.categoria?.toLowerCase(),
+    ) ?? categories[0];
+  const visibleCompetitions = competitions.filter(
+    (competition) => competition.categoria === activeCategory,
+  );
 
   return (
     <>
@@ -59,7 +76,16 @@ export default async function StandingsPage({
             }
           />
         ) : (
-          competitions.map((competition) => {
+          <>
+            <CategoryTabs
+              label={gl ? "Escolle equipo" : "Elige equipo"}
+              tabs={categories.map((category) => ({
+                href: `/${locale}/clasificacion?categoria=${category.toLowerCase()}`,
+                label: categoryLabel(category, locale),
+                active: category === activeCategory,
+              }))}
+            />
+          {visibleCompetitions.map((competition) => {
             const rows = standings.filter(
               (row) => row.competicion_id === competition.id,
             );
@@ -121,7 +147,8 @@ export default async function StandingsPage({
                 </div>
               </section>
             );
-          })
+          })}
+          </>
         )}
       </section>
     </>

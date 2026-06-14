@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { CategoryTabs } from "@/components/category-tabs";
 import { DataEmpty } from "@/components/data-empty";
 import { JsonLd } from "@/components/json-ld";
 import { MatchCard } from "@/components/match-card";
@@ -29,13 +31,28 @@ export async function generateMetadata({
 
 export default async function MatchesPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ categoria?: string; todos?: string }>;
 }) {
   const locale = await readLocale(params);
   const gl = locale === "gl";
   const matches = await getSantisoMatches();
   const categories = ["Senior", "Femenino", "Veteranos"];
+  const query = await searchParams;
+  const requestedCategory = query.categoria?.toLowerCase();
+  const activeCategory =
+    categories.find((category) => category.toLowerCase() === requestedCategory) ??
+    categories.find((category) =>
+      matches.some((match) => match.categoria === category),
+    ) ??
+    categories[0];
+  const categoryMatches = matches.filter(
+    (match) => match.categoria === activeCategory,
+  );
+  const visibleMatches =
+    query.todos === "1" ? categoryMatches : categoryMatches.slice(0, 12);
 
   return (
     <>
@@ -83,27 +100,46 @@ export default async function MatchesPage({
             }
           />
         ) : (
-          categories.map((category) => {
-            const categoryMatches = matches.filter(
-              (match) => match.categoria === category,
-            );
-            if (categoryMatches.length === 0) return null;
-
-            return (
-              <section className="sports-group" key={category}>
-                <header className="sports-group__header">
+          <>
+            <CategoryTabs
+              label={gl ? "Escolle equipo" : "Elige equipo"}
+              tabs={categories.map((category) => ({
+                href: `/${locale}/partidos?categoria=${category.toLowerCase()}`,
+                label: categoryLabel(category, locale),
+                meta: `${matches.filter((match) => match.categoria === category).length}`,
+                active: category === activeCategory,
+              }))}
+            />
+            <section className="sports-group">
+              <header className="sports-group__header">
+                <div>
                   <p className="eyebrow">{gl ? "Calendario" : "Calendario"}</p>
-                  <h2>{categoryLabel(category, locale)}</h2>
-                  <span>{categoryMatches[0]?.temporada}</span>
-                </header>
-                <div className="match-list">
-                  {categoryMatches.map((match) => (
-                    <MatchCard match={match} locale={locale} key={match.id} />
-                  ))}
+                  <h2>{categoryLabel(activeCategory, locale)}</h2>
                 </div>
-              </section>
-            );
-          })
+                <span>{categoryMatches[0]?.temporada}</span>
+              </header>
+              <div className="match-list">
+                {visibleMatches.map((match) => (
+                  <MatchCard match={match} locale={locale} key={match.id} />
+                ))}
+              </div>
+              {query.todos !== "1" && categoryMatches.length > visibleMatches.length ? (
+                <div className="list-more">
+                  <p>
+                    {gl
+                      ? `Amosando os ${visibleMatches.length} partidos máis recentes.`
+                      : `Mostrando los ${visibleMatches.length} partidos más recientes.`}
+                  </p>
+                  <Link
+                    className="button"
+                    href={`/${locale}/partidos?categoria=${activeCategory.toLowerCase()}&todos=1`}
+                  >
+                    {gl ? "Ver calendario completo" : "Ver calendario completo"}
+                  </Link>
+                </div>
+              ) : null}
+            </section>
+          </>
         )}
       </section>
     </>

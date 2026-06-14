@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CategoryTabs } from "@/components/category-tabs";
 import { Crest } from "@/components/crest";
 import { DataEmpty } from "@/components/data-empty";
 import { PageHero } from "@/components/page-hero";
@@ -26,8 +27,10 @@ export async function generateMetadata({
 
 export default async function TeamsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ equipo?: string }>;
 }) {
   const locale = await readLocale(params);
   const gl = locale === "gl";
@@ -49,6 +52,16 @@ export default async function TeamsPage({
       note: gl ? "Experiencia e competición" : "Experiencia y competición",
     },
   ];
+  const query = await searchParams;
+  const activeTeam =
+    teams.find((team) => team.id === query.equipo?.toLowerCase()) ?? teams[0];
+  const sourceCategory =
+    activeTeam.id === "feminino" ? "Femenino" : activeTeam.name;
+  const players = roster.filter((player) => player.categoria === sourceCategory);
+  const coaches = staff.filter(
+    (member) =>
+      member.tipo === "Tecnico" && member.categoria === sourceCategory,
+  );
 
   return (
     <>
@@ -72,61 +85,59 @@ export default async function TeamsPage({
             }
           />
         ) : (
-          teams.map((team, index) => {
-            const sourceCategory = team.id === "feminino" ? "Femenino" : team.name;
-            const players = roster.filter(
-              (player) => player.categoria === sourceCategory,
-            );
-            const coaches = staff.filter(
-              (member) =>
-                member.tipo === "Tecnico" &&
-                member.categoria === sourceCategory,
-            );
-
-            return (
-              <section className="roster-section" id={team.id} key={team.id}>
-                <header className="roster-row">
-                  <span>0{index + 1}</span>
-                  <div>
-                    <p>{team.note}</p>
-                    <h2>{team.name}</h2>
-                  </div>
-                  <small>
-                    {players.length} {gl ? "xogadores" : "jugadores"}
-                  </small>
-                </header>
-                <div className="player-grid">
-                  {players.map((player) => (
-                    <article className="player-card" key={player.id}>
-                      <div className="player-card__photo">
-                        <Crest
-                          src={player.foto_url}
-                          name={player.apodo ?? player.nombre}
-                          size={120}
-                        />
-                        <span>{player.dorsal ?? "—"}</span>
-                      </div>
-                      <p>{player.posicion ?? (gl ? "Xogador" : "Jugador")}</p>
-                      <h3>{player.apodo ?? player.nombre}</h3>
-                      {player.capitan ? (
-                        <small>{gl ? "Capitán" : "Capitán"}</small>
-                      ) : null}
+          <>
+            <CategoryTabs
+              label={gl ? "Escolle equipo" : "Elige equipo"}
+              tabs={teams.map((team) => {
+                const category = team.id === "feminino" ? "Femenino" : team.name;
+                return {
+                  href: `/${locale}/equipos?equipo=${team.id}`,
+                  label: team.name,
+                  meta: `${roster.filter((player) => player.categoria === category).length}`,
+                  active: team.id === activeTeam.id,
+                };
+              })}
+            />
+            <section className="roster-section" id={activeTeam.id}>
+              <header className="roster-row">
+                <span>{teams.indexOf(activeTeam) + 1}</span>
+                <div>
+                  <p>{activeTeam.note}</p>
+                  <h2>{activeTeam.name}</h2>
+                </div>
+                <small>
+                  {players.length} {gl ? "xogadores" : "jugadores"}
+                </small>
+              </header>
+              <div className="player-grid">
+                {players.map((player) => (
+                  <article className="player-card" key={player.id}>
+                    <div className="player-card__photo">
+                      <Crest
+                        src={player.foto_url}
+                        name={player.apodo ?? player.nombre}
+                        size={180}
+                      />
+                      <span>{player.dorsal ?? "—"}</span>
+                    </div>
+                    <p>{player.posicion ?? (gl ? "Xogador" : "Jugador")}</p>
+                    <h3>{player.apodo ?? player.nombre}</h3>
+                    {player.capitan ? <small>{gl ? "Capitán" : "Capitán"}</small> : null}
+                  </article>
+                ))}
+              </div>
+              {coaches.length > 0 ? (
+                <div className="staff-strip">
+                  {coaches.map((member) => (
+                    <article key={member.id}>
+                      <strong>{member.nombre}</strong>
+                      <span>{member.cargo}</span>
                     </article>
                   ))}
                 </div>
-                {coaches.length > 0 ? (
-                  <div className="staff-strip">
-                    {coaches.map((member) => (
-                      <article key={member.id}>
-                        <strong>{member.nombre}</strong>
-                        <span>{member.cargo}</span>
-                      </article>
-                    ))}
-                  </div>
-                ) : null}
-              </section>
-            );
-          })
+              ) : null}
+            </section>
+          </>
         )}
       </section>
     </>

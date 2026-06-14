@@ -1,10 +1,17 @@
 import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "../globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { locales, readLocale } from "@/lib/locale";
 import { siteConfig } from "@/lib/site";
+
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -51,7 +58,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body>
+      <body className={inter.variable}>
         <div className="site-frame" data-locale={locale}>
           <a className="skip-link" href="#main-content">
             {locale === "gl" ? "Saltar ao contido" : "Saltar al contenido"}

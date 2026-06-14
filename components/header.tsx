@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { BrandMark } from "@/components/brand-mark";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { RouteNav } from "@/components/route-nav";
 import { getContent } from "@/lib/content";
 import { alternateLocale, type Locale } from "@/lib/locale";
 
@@ -21,13 +22,7 @@ export function Header({ locale }: { locale: Locale }) {
     <header className="site-header">
       <div className="site-header__inner shell">
         <BrandMark locale={locale} />
-        <nav className="desktop-nav" aria-label={copy.common.navigation}>
-          {links.map(([href, label]) => (
-            <Link href={`/${locale}/${href}`} key={href}>
-              {label}
-            </Link>
-          ))}
-        </nav>
+        <RouteNav label={copy.common.navigation} links={links} locale={locale} />
         <div className="header-actions">
           <Suspense
             fallback={
@@ -56,14 +51,15 @@ export function Header({ locale }: { locale: Locale }) {
               <span />
               <span />
             </summary>
-            <nav aria-label={copy.common.mobileNavigation}>
-              {links.map(([href, label]) => (
-                <Link href={`/${locale}/${href}`} key={href}>
-                  {label}
-                </Link>
-              ))}
+            <div className="mobile-menu__panel">
+              <RouteNav
+                label={copy.common.mobileNavigation}
+                links={links}
+                locale={locale}
+                mobile
+              />
               <Link href={`/${locale}/contacto`}>{copy.nav.contact}</Link>
-            </nav>
+            </div>
           </details>
         </div>
       </div>
