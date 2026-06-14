@@ -1,5 +1,7 @@
 # Checklist de lanzamento
 
+Estado local e bloqueos externos: `docs/V1_STATUS.md`.
+
 ## 1. Repositorio
 
 - Executar `pnpm install` nun equipo con rede e versionar `pnpm-lock.yaml`.

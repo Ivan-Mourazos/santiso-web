@@ -5,6 +5,14 @@
 Crear web pública bilingüe, rápida e independente do panel legacy. O proxecto
 actual seguirá funcionando temporalmente como ferramenta interna.
 
+## Estado V1 no repositorio
+
+A implementación local da base pública, conexións de lectura, contido bilingüe,
+SEO, accesibilidade e controis de calidade está pechada. As accións pendentes
+necesitan acceso á base compartida, datos reais, preview ou dominio.
+
+Ver `docs/V1_STATUS.md` para verificación e bloqueos de lanzamento.
+
 ## Fase 0 - seguridade
 
 1. Rotar claves `service_role` expostas nos scripts legacy.

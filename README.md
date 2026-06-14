@@ -39,3 +39,5 @@ novas e produtos. Aplicar despois `002_public_sports_views.sql`. A migración
 executarse tras validar login admin e rotar claves expostas do proxecto legacy.
 `supabase/verification/data_quality_report.sql` xera unha cola de datos
 pendentes sen modificar a base.
+
+Estado de peche V1 e bloqueos de lanzamento: `docs/V1_STATUS.md`.
