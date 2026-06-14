@@ -1,7 +1,13 @@
+import Image from "next/image";
+import { DataEmpty } from "@/components/data-empty";
+import { JsonLd } from "@/components/json-ld";
+import { MatchCard } from "@/components/match-card";
 import Link from "next/link";
 import { SectionHeading } from "@/components/section-heading";
 import { getContent } from "@/lib/content";
 import { readLocale } from "@/lib/locale";
+import { getLatestResults, getSponsors } from "@/lib/public-data";
+import { siteConfig } from "@/lib/site";
 
 export default async function HomePage({
   params,
@@ -10,6 +16,10 @@ export default async function HomePage({
 }) {
   const locale = await readLocale(params);
   const copy = getContent(locale);
+  const [latestResults, sponsors] = await Promise.all([
+    getLatestResults(),
+    getSponsors(),
+  ]);
   const teams =
     locale === "gl"
       ? [
@@ -25,6 +35,20 @@ export default async function HomePage({
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "SportsTeam",
+          name: siteConfig.name,
+          sport: "Football",
+          url: `${siteConfig.url}/${locale}`,
+          logo: siteConfig.crestUrl,
+          location: {
+            "@type": "Place",
+            name: "Santiso, Galicia",
+          },
+        }}
+      />
       <section className="hero">
         <div className="hero__texture" />
         <div className="shell hero__inner">
@@ -47,7 +71,7 @@ export default async function HomePage({
           <div className="hero__monogram" aria-hidden="true">
             <span>UD</span>
             <strong>S</strong>
-            <small>1990 · Santiso</small>
+            <small>Santiso · Galicia</small>
           </div>
         </div>
         <div className="hero__ticker">
@@ -104,6 +128,42 @@ export default async function HomePage({
         </div>
       </section>
 
+      <section className="section shell">
+        <SectionHeading
+          eyebrow={locale === "gl" ? "Últimos resultados" : "Últimos resultados"}
+          title={
+            locale === "gl"
+              ? "O marcador conta unha parte."
+              : "El marcador cuenta una parte."
+          }
+          body={
+            locale === "gl"
+              ? "Consulta os últimos partidos dos tres equipos do club."
+              : "Consulta los últimos partidos de los tres equipos del club."
+          }
+        />
+        <div className="home-results">
+          {latestResults.length > 0 ? (
+            latestResults.map((match) => (
+              <MatchCard match={match} locale={locale} key={match.id} />
+            ))
+          ) : (
+            <DataEmpty
+              title={
+                locale === "gl"
+                  ? "Resultados en conexión"
+                  : "Resultados en conexión"
+              }
+              body={
+                locale === "gl"
+                  ? "A web está preparada para recibir os datos públicos seguros."
+                  : "La web está preparada para recibir los datos públicos seguros."
+              }
+            />
+          )}
+        </div>
+      </section>
+
       <section className="section shell shop-callout">
         <div>
           <p className="eyebrow">{copy.nav.shop}</p>
@@ -114,6 +174,31 @@ export default async function HomePage({
           {copy.common.shop}
         </Link>
       </section>
+
+      {sponsors.length > 0 ? (
+        <section className="section shell sponsors-section">
+          <p className="eyebrow">
+            {locale === "gl" ? "Patrocinadores" : "Patrocinadores"}
+          </p>
+          <div className="sponsor-grid">
+            {sponsors.map((sponsor) => (
+              <a
+                href={sponsor.web_url ?? "#"}
+                key={sponsor.id}
+                rel="noreferrer"
+                target={sponsor.web_url ? "_blank" : undefined}
+              >
+                <Image
+                  src={sponsor.logo_url}
+                  alt={sponsor.nombre}
+                  width={240}
+                  height={120}
+                />
+              </a>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </>
   );
 }

@@ -1,5 +1,8 @@
+import { Crest } from "@/components/crest";
+import { DataEmpty } from "@/components/data-empty";
 import { PageHero } from "@/components/page-hero";
 import { readLocale } from "@/lib/locale";
+import { getRoster, getStaff } from "@/lib/public-data";
 
 export default async function TeamsPage({
   params,
@@ -8,6 +11,7 @@ export default async function TeamsPage({
 }) {
   const locale = await readLocale(params);
   const gl = locale === "gl";
+  const [roster, staff] = await Promise.all([getRoster(), getStaff()]);
   const teams = [
     {
       id: "senior",
@@ -38,16 +42,72 @@ export default async function TeamsPage({
         }
       />
       <section className="section shell roster-list">
-        {teams.map((team, index) => (
-          <article className="roster-row" id={team.id} key={team.id}>
-            <span>0{index + 1}</span>
-            <div>
-              <p>{team.note}</p>
-              <h2>{team.name}</h2>
-            </div>
-            <small>{gl ? "Plantilla próxima" : "Plantilla próximamente"}</small>
-          </article>
-        ))}
+        {roster.length === 0 ? (
+          <DataEmpty
+            title={gl ? "Plantillas en conexión" : "Plantillas en conexión"}
+            body={
+              gl
+                ? "Os xogadores aparecerán aquí ao aplicar a vista pública segura."
+                : "Los jugadores aparecerán aquí al aplicar la vista pública segura."
+            }
+          />
+        ) : (
+          teams.map((team, index) => {
+            const sourceCategory = team.id === "feminino" ? "Femenino" : team.name;
+            const players = roster.filter(
+              (player) => player.categoria === sourceCategory,
+            );
+            const coaches = staff.filter(
+              (member) =>
+                member.tipo === "Tecnico" &&
+                member.categoria === sourceCategory,
+            );
+
+            return (
+              <section className="roster-section" id={team.id} key={team.id}>
+                <header className="roster-row">
+                  <span>0{index + 1}</span>
+                  <div>
+                    <p>{team.note}</p>
+                    <h2>{team.name}</h2>
+                  </div>
+                  <small>
+                    {players.length} {gl ? "xogadores" : "jugadores"}
+                  </small>
+                </header>
+                <div className="player-grid">
+                  {players.map((player) => (
+                    <article className="player-card" key={player.id}>
+                      <div className="player-card__photo">
+                        <Crest
+                          src={player.foto_url}
+                          name={player.apodo ?? player.nombre}
+                          size={120}
+                        />
+                        <span>{player.dorsal ?? "—"}</span>
+                      </div>
+                      <p>{player.posicion ?? (gl ? "Xogador" : "Jugador")}</p>
+                      <h3>{player.apodo ?? player.nombre}</h3>
+                      {player.capitan ? (
+                        <small>{gl ? "Capitán" : "Capitán"}</small>
+                      ) : null}
+                    </article>
+                  ))}
+                </div>
+                {coaches.length > 0 ? (
+                  <div className="staff-strip">
+                    {coaches.map((member) => (
+                      <article key={member.id}>
+                        <strong>{member.nombre}</strong>
+                        <span>{member.cargo}</span>
+                      </article>
+                    ))}
+                  </div>
+                ) : null}
+              </section>
+            );
+          })
+        )}
       </section>
     </>
   );

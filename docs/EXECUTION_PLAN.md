@@ -21,11 +21,23 @@ actual seguirá funcionando temporalmente como ferramenta interna.
 
 ## Fase 2 - datos deportivos
 
-1. Aplicar e revisar migración pública.
+1. Aplicar e revisar migracións `001` e `002`.
 2. Conectar calendarios e resultados.
 3. Calcular clasificacións en PostgreSQL, non no navegador.
 4. Publicar plantillas e perfís por equipo e tempada.
 5. Completar 19 partidos sen estatísticas e 9 xogadores sen foto.
+
+## Corte de seguridade compartida
+
+Aplicar `003_shared_database_security.sql` só despois de:
+
+1. Rotar claves `service_role` expostas.
+2. Confirmar que o usuario admin pode iniciar sesión no panel legacy.
+3. Despregar a web pública nova.
+4. Verificar que importadores legacy operan como usuario autenticado.
+
+Esta migración elimina escrituras anónimas e limita lectura anónima a columnas
+necesarias para a web pública.
 
 ## Fase 3 - contido
 

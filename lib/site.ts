@@ -3,10 +3,10 @@ import type { Locale } from "@/lib/locale";
 export const siteConfig = {
   name: "U.D. Santiso F.C.",
   shortName: "UD Santiso",
-  url: "https://udsantiso.gal",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   crestUrl:
     "https://jqwzalcvujataysvanjy.supabase.co/storage/v1/object/public/fotos/escudo_club.webp",
-} as const;
+};
 
 export type Product = {
   id: string;
@@ -46,11 +46,20 @@ export const products: Product[] = [
 ];
 
 export function whatsappOrderUrl(product: Product, locale: Locale) {
-  const number = process.env.NEXT_PUBLIC_WHATSAPP_SALES ?? "";
+  return whatsappMessageUrl(product.name[locale], locale);
+}
+
+export function whatsappMessageUrl(
+  productName: string,
+  locale: Locale,
+  configuredNumber?: string | null,
+) {
+  const number =
+    configuredNumber ?? process.env.NEXT_PUBLIC_WHATSAPP_SALES ?? "";
   const text =
     locale === "gl"
-      ? `Ola, quero encargar a camiseta ${product.name.gl}. Gustaríame consultar talla, prezo e dispoñibilidade.`
-      : `Hola, quiero encargar la camiseta ${product.name.es}. Me gustaría consultar talla, precio y disponibilidad.`;
+      ? `Ola, quero encargar ${productName}. Gustaríame consultar talla, prezo e dispoñibilidade.`
+      : `Hola, quiero encargar ${productName}. Me gustaría consultar talla, precio y disponibilidad.`;
 
   return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 }

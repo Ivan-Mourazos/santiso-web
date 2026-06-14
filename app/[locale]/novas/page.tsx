@@ -1,5 +1,10 @@
+import Image from "next/image";
+import Link from "next/link";
+import { DataEmpty } from "@/components/data-empty";
 import { PageHero } from "@/components/page-hero";
+import { formatMatchDate } from "@/lib/format";
 import { readLocale } from "@/lib/locale";
+import { getPosts } from "@/lib/public-data";
 
 export default async function NewsPage({
   params,
@@ -8,6 +13,7 @@ export default async function NewsPage({
 }) {
   const locale = await readLocale(params);
   const gl = locale === "gl";
+  const posts = await getPosts();
 
   return (
     <>
@@ -21,15 +27,46 @@ export default async function NewsPage({
         }
       />
       <section className="section shell">
-        <div className="empty-panel">
-          <span>+</span>
-          <h2>{gl ? "Primeira nova, en breve" : "Primera noticia, en breve"}</h2>
-          <p>
-            {gl
-              ? "O novo modelo editorial está preparado para contido bilingüe."
-              : "El nuevo modelo editorial está preparado para contenido bilingüe."}
-          </p>
-        </div>
+        {posts.length === 0 ? (
+          <DataEmpty
+            title={gl ? "Primeira nova, en breve" : "Primera noticia, en breve"}
+            body={
+              gl
+                ? "O novo modelo editorial está preparado para contido bilingüe."
+                : "El nuevo modelo editorial está preparado para contenido bilingüe."
+            }
+          />
+        ) : (
+          <div className="news-grid">
+            {posts.map((post) => (
+              <Link
+                className="news-card"
+                href={`/${locale}/novas/${post.slug}`}
+                key={post.id}
+              >
+                <div className="news-card__image">
+                  {post.cover_image_url ? (
+                    <Image
+                      src={post.cover_image_url}
+                      alt=""
+                      fill
+                      sizes="(max-width: 900px) 100vw, 50vw"
+                    />
+                  ) : (
+                    <span>UDS</span>
+                  )}
+                </div>
+                <div className="news-card__body">
+                  <p className="eyebrow">
+                    {formatMatchDate(post.published_at, locale)}
+                  </p>
+                  <h2>{gl ? post.title_gl : post.title_es}</h2>
+                  <p>{gl ? post.excerpt_gl : post.excerpt_es}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
     </>
   );

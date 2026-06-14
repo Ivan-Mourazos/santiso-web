@@ -1,5 +1,6 @@
 import { PageHero } from "@/components/page-hero";
 import { readLocale } from "@/lib/locale";
+import { getHonours } from "@/lib/public-data";
 
 export default async function ClubPage({
   params,
@@ -8,6 +9,7 @@ export default async function ClubPage({
 }) {
   const locale = await readLocale(params);
   const gl = locale === "gl";
+  const honours = await getHonours();
 
   return (
     <>
@@ -42,6 +44,27 @@ export default async function ClubPage({
           ))}
         </div>
       </section>
+      {honours.length > 0 ? (
+        <section className="section section--light">
+          <div className="shell">
+            <p className="eyebrow">{gl ? "Palmarés" : "Palmarés"}</p>
+            <div className="honours-list">
+              {honours.map((honour, index) => (
+                <article key={honour.id}>
+                  <span>{honour.season ?? `0${index + 1}`}</span>
+                  <div>
+                    <p>{honour.category}</p>
+                    <h2>{gl ? honour.title_gl : honour.title_es}</h2>
+                  </div>
+                  <p>
+                    {gl ? honour.description_gl : honour.description_es}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
     </>
   );
 }

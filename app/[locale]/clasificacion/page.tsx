@@ -1,5 +1,9 @@
+import { Crest } from "@/components/crest";
+import { DataEmpty } from "@/components/data-empty";
 import { PageHero } from "@/components/page-hero";
+import { categoryLabel } from "@/lib/format";
 import { readLocale } from "@/lib/locale";
+import { getCompetitions, getStandings } from "@/lib/public-data";
 
 export default async function StandingsPage({
   params,
@@ -8,6 +12,10 @@ export default async function StandingsPage({
 }) {
   const locale = await readLocale(params);
   const gl = locale === "gl";
+  const [competitions, standings] = await Promise.all([
+    getCompetitions(),
+    getStandings(),
+  ]);
 
   return (
     <>
@@ -16,20 +24,85 @@ export default async function StandingsPage({
         title={gl ? "Clasificacións claras." : "Clasificaciones claras."}
         intro={
           gl
-            ? "A nova vista calcularase na base de datos para cargar ao instante e aplicar correctamente as regras de cada competición."
-            : "La nueva vista se calculará en la base de datos para cargar al instante y aplicar correctamente las reglas de cada competición."
+            ? "A clasificación calcúlase na base de datos para cargar ao instante e manter un criterio consistente."
+            : "La clasificación se calcula en la base de datos para cargar al instante y mantener un criterio consistente."
         }
       />
-      <section className="section shell">
-        <div className="empty-panel">
-          <span>01</span>
-          <h2>{gl ? "Datos deportivos en conexión" : "Datos deportivos en conexión"}</h2>
-          <p>
-            {gl
-              ? "Próxima fase: conectar clasificacións optimizadas da BD actual."
-              : "Próxima fase: conectar clasificaciones optimizadas de la BD actual."}
-          </p>
-        </div>
+      <section className="section shell standings-stack">
+        {standings.length === 0 ? (
+          <DataEmpty
+            title={gl ? "Clasificación en conexión" : "Clasificación en conexión"}
+            body={
+              gl
+                ? "As táboas aparecerán aquí ao aplicar a vista pública segura."
+                : "Las tablas aparecerán aquí al aplicar la vista pública segura."
+            }
+          />
+        ) : (
+          competitions.map((competition) => {
+            const rows = standings.filter(
+              (row) => row.competicion_id === competition.id,
+            );
+            if (rows.length === 0 || competition.formato === "eliminatoria") {
+              return null;
+            }
+
+            return (
+              <section className="standings-panel" key={competition.id}>
+                <header>
+                  <div>
+                    <p className="eyebrow">
+                      {categoryLabel(competition.categoria, locale)}
+                    </p>
+                    <h2>{competition.nombre}</h2>
+                  </div>
+                  <span>{gl ? "Tempada activa" : "Temporada activa"}</span>
+                </header>
+                <div className="table-scroll">
+                  <table className="standings-table">
+                    <thead>
+                      <tr>
+                        <th>Pos</th>
+                        <th>{gl ? "Equipo" : "Equipo"}</th>
+                        <th>PJ</th>
+                        <th>PG</th>
+                        <th>PE</th>
+                        <th>PP</th>
+                        <th>DG</th>
+                        <th>PTS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((row) => (
+                        <tr key={row.equipo_id}>
+                          <td>{row.posicion}</td>
+                          <td>
+                            <span className="standing-team">
+                              <Crest
+                                src={row.escudo_url}
+                                name={row.nombre}
+                                size={34}
+                              />
+                              <strong>{row.nombre}</strong>
+                            </span>
+                          </td>
+                          <td>{row.pj}</td>
+                          <td>{row.pg}</td>
+                          <td>{row.pe}</td>
+                          <td>{row.pp}</td>
+                          <td>{row.dg > 0 ? `+${row.dg}` : row.dg}</td>
+                          <td>
+                            <strong>{row.pts}</strong>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            );
+          })
+        )}
       </section>
     </>
   );
