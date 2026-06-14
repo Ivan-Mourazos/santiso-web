@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const localBrowser = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
+
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
@@ -9,6 +11,7 @@ export default defineConfig({
   reporter: process.env.CI ? "github" : "html",
   use: {
     baseURL: "http://127.0.0.1:3000",
+    launchOptions: localBrowser ? { executablePath: localBrowser } : undefined,
     trace: "on-first-retry",
   },
   webServer: {

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense, ViewTransition } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { formatMatchDate } from "@/lib/format";
 import { readLocale } from "@/lib/locale";
@@ -33,7 +34,32 @@ export async function generateMetadata({
   };
 }
 
-export default async function NewsDetailPage({
+export default function NewsDetailPage({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <ViewTransition exit="slide-down">
+          <article className="article-page shell" aria-busy="true">
+            <header>
+              <p className="eyebrow">U.D. Santiso F.C.</p>
+              <h1>Cargando nova...</h1>
+            </header>
+          </article>
+        </ViewTransition>
+      }
+    >
+      <ViewTransition default="none" enter="slide-up">
+        <NewsArticle params={params} />
+      </ViewTransition>
+    </Suspense>
+  );
+}
+
+async function NewsArticle({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;

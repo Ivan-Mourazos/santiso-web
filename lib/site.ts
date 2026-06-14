@@ -1,9 +1,11 @@
 import type { Locale } from "@/lib/locale";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const siteConfig = {
   name: "U.D. Santiso F.C.",
   shortName: "UD Santiso",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: siteUrl.replace(/\/+$/, ""),
   crestUrl:
     "https://jqwzalcvujataysvanjy.supabase.co/storage/v1/object/public/fotos/escudo_club.webp",
 };

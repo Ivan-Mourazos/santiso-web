@@ -3,10 +3,14 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   cacheComponents: true,
   experimental: {
+    globalNotFound: true,
     viewTransition: true,
   },
   poweredByHeader: false,
   reactStrictMode: true,
+  turbopack: {
+    root: process.cwd(),
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 86_400,

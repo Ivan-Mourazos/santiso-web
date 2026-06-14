@@ -20,7 +20,7 @@ export function Footer({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/contacto`}>{copy.nav.contact}</Link>
         </div>
         <p className="footer-legal">
-          © 2026 {copy.footer.rights}
+          © U.D. Santiso F.C. · {copy.footer.rights}
         </p>
       </div>
     </footer>

@@ -116,9 +116,9 @@ export default async function HomePage({
       <section className="section section--light">
         <div className="shell split-feature">
           <div className="split-feature__visual">
-            <span>90</span>
-            <p>{locale === "gl" ? "partidos do Santiso" : "partidos del Santiso"}</p>
-            <small>{copy.common.season}</small>
+            <span>03</span>
+            <p>{locale === "gl" ? "equipos do club" : "equipos del club"}</p>
+            <small>Senior · Feminino · Veteranos</small>
           </div>
           <SectionHeading
             eyebrow={copy.home.pulseLabel}
@@ -181,21 +181,29 @@ export default async function HomePage({
             {locale === "gl" ? "Patrocinadores" : "Patrocinadores"}
           </p>
           <div className="sponsor-grid">
-            {sponsors.map((sponsor) => (
-              <a
-                href={sponsor.web_url ?? "#"}
-                key={sponsor.id}
-                rel="noreferrer"
-                target={sponsor.web_url ? "_blank" : undefined}
-              >
+            {sponsors.map((sponsor) => {
+              const logo = (
                 <Image
                   src={sponsor.logo_url}
                   alt={sponsor.nombre}
                   width={240}
                   height={120}
                 />
-              </a>
-            ))}
+              );
+
+              return sponsor.web_url ? (
+                <a
+                  href={sponsor.web_url}
+                  key={sponsor.id}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {logo}
+                </a>
+              ) : (
+                <div key={sponsor.id}>{logo}</div>
+              );
+            })}
           </div>
         </section>
       ) : null}
