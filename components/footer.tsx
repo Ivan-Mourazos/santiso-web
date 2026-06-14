@@ -20,7 +20,7 @@ export function Footer({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/contacto`}>{copy.nav.contact}</Link>
         </div>
         <p className="footer-legal">
-          © {new Date().getFullYear()} {copy.footer.rights}
+          © 2026 {copy.footer.rights}
         </p>
       </div>
     </footer>

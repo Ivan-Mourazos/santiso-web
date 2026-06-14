@@ -17,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return locales.flatMap((locale) =>
     routes.map((route) => ({
       url: `${siteConfig.url}/${locale}${route}`,
-      changeFrequency: route === "" ? "weekly" : "monthly",
+      changeFrequency: route === "" ? ("weekly" as const) : ("monthly" as const),
       priority: route === "" ? 1 : 0.7,
     })),
   );

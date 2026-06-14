@@ -18,6 +18,20 @@ export async function generateMetadata({
   const other = alternateLocale(locale);
 
   return {
+    metadataBase: new URL(siteConfig.url),
+    title: {
+      default: `${siteConfig.shortName} | Sitio oficial`,
+      template: `%s | ${siteConfig.shortName}`,
+    },
+    description:
+      locale === "gl"
+        ? "Sitio oficial da U.D. Santiso F.C. Partidos, clasificación, equipos, novas e tenda."
+        : "Sitio oficial de la U.D. Santiso F.C. Partidos, clasificación, equipos, noticias y tienda.",
+    openGraph: {
+      type: "website",
+      siteName: siteConfig.name,
+      locale: locale === "gl" ? "gl_ES" : "es_ES",
+    },
     alternates: {
       canonical: `${siteConfig.url}/${locale}`,
       languages: {
@@ -38,10 +52,14 @@ export default async function LocaleLayout({
   const locale = await readLocale(params);
 
   return (
-    <div className="site-frame" data-locale={locale}>
-      <Header locale={locale} />
-      <main>{children}</main>
-      <Footer locale={locale} />
-    </div>
+    <html lang={locale}>
+      <body>
+        <div className="site-frame" data-locale={locale}>
+          <Header locale={locale} />
+          <main>{children}</main>
+          <Footer locale={locale} />
+        </div>
+      </body>
+    </html>
   );
 }
