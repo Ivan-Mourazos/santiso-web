@@ -37,3 +37,5 @@ pnpm quality:lighthouse
 novas e produtos. Aplicar despois `002_public_sports_views.sql`. A migración
 `003_shared_database_security.sql` elimina escrituras anónimas, pero só debe
 executarse tras validar login admin e rotar claves expostas do proxecto legacy.
+`supabase/verification/data_quality_report.sql` xera unha cola de datos
+pendentes sen modificar a base.

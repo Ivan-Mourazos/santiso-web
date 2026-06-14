@@ -14,6 +14,7 @@
 3. Despregar e comprobar a web pública.
 4. `003_shared_database_security.sql`
 5. `verification/public_web_checks.sql`
+6. `verification/data_quality_report.sql`
 
 ## Resultado esperado
 
@@ -21,6 +22,8 @@
 - Rol `anon` non pode inserir, modificar nin borrar.
 - Rol `authenticated` mantén xestión do panel legacy.
 - RPC de gardado de actas non é executábel por `anon`.
+- Informe de calidade produce cola priorizada; bloque de integridade devolve
+  cero filas.
 
 ## Volta atrás
 
