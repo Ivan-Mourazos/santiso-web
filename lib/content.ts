@@ -20,6 +20,10 @@ const content = {
       readMore: "Saber máis",
       season: "Tempada 25/26",
       language: "ES",
+      navigation: "Navegación principal",
+      mobileNavigation: "Navegación móbil",
+      openMenu: "Abrir menú",
+      switchLanguage: "Cambiar ao castelán",
     },
     home: {
       eyebrow: "U.D. Santiso F.C. · Galicia",
@@ -63,6 +67,10 @@ const content = {
       readMore: "Saber más",
       season: "Temporada 25/26",
       language: "GL",
+      navigation: "Navegación principal",
+      mobileNavigation: "Navegación móvil",
+      openMenu: "Abrir menú",
+      switchLanguage: "Cambiar al gallego",
     },
     home: {
       eyebrow: "U.D. Santiso F.C. · Galicia",

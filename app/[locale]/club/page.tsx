@@ -1,6 +1,27 @@
+import Image from "next/image";
+import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
 import { readLocale } from "@/lib/locale";
-import { getHonours } from "@/lib/public-data";
+import { localizedMetadata } from "@/lib/metadata";
+import { getClubPages, getHonours } from "@/lib/public-data";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = await readLocale(params);
+
+  return localizedMetadata({
+    locale,
+    path: "club",
+    title: locale === "gl" ? "O club" : "El club",
+    description:
+      locale === "gl"
+        ? "Historia, valores, campo e palmarés da U.D. Santiso F.C."
+        : "Historia, valores, campo y palmarés de la U.D. Santiso F.C.",
+  });
+}
 
 export default async function ClubPage({
   params,
@@ -9,7 +30,7 @@ export default async function ClubPage({
 }) {
   const locale = await readLocale(params);
   const gl = locale === "gl";
-  const honours = await getHonours();
+  const [clubPages, honours] = await Promise.all([getClubPages(), getHonours()]);
 
   return (
     <>
@@ -17,9 +38,13 @@ export default async function ClubPage({
         eyebrow={gl ? "O noso club" : "Nuestro club"}
         title={gl ? "Un escudo feito de persoas." : "Un escudo hecho de personas."}
         intro={
-          gl
-            ? "A historia completa está por escribir aquí. Este espazo reunirá orixe, valores, campo e trofeos da U.D. Santiso F.C."
-            : "La historia completa está por escribir aquí. Este espacio reunirá origen, valores, campo y trofeos de la U.D. Santiso F.C."
+          clubPages.length > 0
+            ? gl
+              ? "Coñece a orixe, os valores, o campo e a memoria da U.D. Santiso F.C."
+              : "Conoce el origen, los valores, el campo y la memoria de la U.D. Santiso F.C."
+            : gl
+              ? "A historia completa está por escribir aquí. Este espazo reunirá orixe, valores, campo e trofeos da U.D. Santiso F.C."
+              : "La historia completa está por escribir aquí. Este espacio reunirá origen, valores, campo y trofeos de la U.D. Santiso F.C."
         }
       />
       <section className="section shell">
@@ -44,6 +69,53 @@ export default async function ClubPage({
           ))}
         </div>
       </section>
+      {clubPages.length > 0 ? (
+        <section className="section section--light">
+          <div className="shell club-story-list">
+            {clubPages.map((page) => {
+              const title = gl ? page.title_gl : page.title_es;
+              const summary = gl ? page.summary_gl : page.summary_es;
+              const body = gl ? page.body_gl : page.body_es;
+
+              return (
+                <article
+                  aria-labelledby={`club-page-${page.id}`}
+                  className="club-story"
+                  key={page.id}
+                >
+                  {page.hero_image_url ? (
+                    <div className="club-story__image">
+                      <Image
+                        alt=""
+                        fill
+                        sizes="(max-width: 900px) 100vw, 50vw"
+                        src={page.hero_image_url}
+                      />
+                    </div>
+                  ) : (
+                    <div className="club-story__mark" aria-hidden="true">
+                      UDS
+                    </div>
+                  )}
+                  <div className="club-story__copy">
+                    <p className="eyebrow">{siteLabel(page.slug, gl)}</p>
+                    <h2 id={`club-page-${page.id}`}>{title}</h2>
+                    {summary ? <strong>{summary}</strong> : null}
+                    {(body ?? "")
+                      .split(/\n{2,}/)
+                      .filter(Boolean)
+                      .map((paragraph, index) => (
+                        <p key={`${index}-${paragraph.slice(0, 24)}`}>
+                          {paragraph}
+                        </p>
+                      ))}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
       {honours.length > 0 ? (
         <section className="section section--light">
           <div className="shell">
@@ -67,4 +139,14 @@ export default async function ClubPage({
       ) : null}
     </>
   );
+}
+
+function siteLabel(slug: string, gl: boolean) {
+  const labels: Record<string, [string, string]> = {
+    historia: ["Historia", "Historia"],
+    valores: ["Valores", "Valores"],
+    campo: ["O noso campo", "Nuestro campo"],
+  };
+
+  return labels[slug]?.[gl ? 0 : 1] ?? (gl ? "O noso club" : "Nuestro club");
 }

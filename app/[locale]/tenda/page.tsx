@@ -1,8 +1,28 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
 import { readLocale } from "@/lib/locale";
+import { localizedMetadata } from "@/lib/metadata";
 import { getProducts } from "@/lib/public-data";
 import { products, whatsappMessageUrl } from "@/lib/site";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = await readLocale(params);
+
+  return localizedMetadata({
+    locale,
+    path: "tenda",
+    title: locale === "gl" ? "Tenda" : "Tienda",
+    description:
+      locale === "gl"
+        ? "Equipacións oficiais da U.D. Santiso F.C. dispoñibles por encargo."
+        : "Equipaciones oficiales de la U.D. Santiso F.C. disponibles por encargo.",
+  });
+}
 
 export default async function ShopPage({
   params,
@@ -25,6 +45,9 @@ export default async function ShopPage({
           priceNote:
             locale === "gl" ? product.price_note_gl : product.price_note_es,
           whatsappNumber: product.whatsapp_number,
+          variants: product.shop_product_variants.toSorted(
+            (left, right) => left.sort_order - right.sort_order,
+          ),
           accent: ["gold", "graphite", "cream"][index % 3],
         }))
       : products.map((product) => ({
@@ -34,6 +57,7 @@ export default async function ShopPage({
           imageUrl: null,
           priceNote: null,
           whatsappNumber: null,
+          variants: [],
           accent: product.accent,
         }));
 
@@ -74,6 +98,16 @@ export default async function ShopPage({
               <p>{product.description}</p>
               {product.priceNote ? (
                 <strong className="product-card__price">{product.priceNote}</strong>
+              ) : null}
+              {product.variants.length > 0 ? (
+                <div className="product-card__variants">
+                  <span>{gl ? "Tallas dispoñibles" : "Tallas disponibles"}</span>
+                  <ul aria-label={gl ? "Tallas dispoñibles" : "Tallas disponibles"}>
+                    {product.variants.map((variant) => (
+                      <li key={variant.id}>{variant.label}</li>
+                    ))}
+                  </ul>
+                </div>
               ) : null}
               <a
                 className="button button--dark"

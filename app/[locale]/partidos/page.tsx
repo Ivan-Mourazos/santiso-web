@@ -1,11 +1,31 @@
+import type { Metadata } from "next";
 import { DataEmpty } from "@/components/data-empty";
 import { JsonLd } from "@/components/json-ld";
 import { MatchCard } from "@/components/match-card";
 import { PageHero } from "@/components/page-hero";
 import { categoryLabel } from "@/lib/format";
 import { readLocale } from "@/lib/locale";
+import { localizedMetadata } from "@/lib/metadata";
 import { getSantisoMatches } from "@/lib/public-data";
 import { siteConfig } from "@/lib/site";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = await readLocale(params);
+
+  return localizedMetadata({
+    locale,
+    path: "partidos",
+    title: locale === "gl" ? "Partidos" : "Partidos",
+    description:
+      locale === "gl"
+        ? "Calendario e resultados dos equipos da U.D. Santiso F.C."
+        : "Calendario y resultados de los equipos de la U.D. Santiso F.C.",
+  });
+}
 
 export default async function MatchesPage({
   params,

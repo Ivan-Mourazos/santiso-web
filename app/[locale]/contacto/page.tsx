@@ -1,5 +1,25 @@
+import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
 import { readLocale } from "@/lib/locale";
+import { localizedMetadata } from "@/lib/metadata";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = await readLocale(params);
+
+  return localizedMetadata({
+    locale,
+    path: "contacto",
+    title: locale === "gl" ? "Contacto" : "Contacto",
+    description:
+      locale === "gl"
+        ? "Canles de contacto, colaboración e patrocinio da U.D. Santiso F.C."
+        : "Canales de contacto, colaboración y patrocinio de la U.D. Santiso F.C.",
+  });
+}
 
 export default async function ContactPage({
   params,

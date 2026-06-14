@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { DataEmpty } from "@/components/data-empty";
 import { JsonLd } from "@/components/json-ld";
 import { MatchCard } from "@/components/match-card";
@@ -6,8 +7,26 @@ import Link from "next/link";
 import { SectionHeading } from "@/components/section-heading";
 import { getContent } from "@/lib/content";
 import { readLocale } from "@/lib/locale";
+import { localizedMetadata } from "@/lib/metadata";
 import { getLatestResults, getSponsors } from "@/lib/public-data";
 import { siteConfig } from "@/lib/site";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = await readLocale(params);
+
+  return localizedMetadata({
+    locale,
+    title: locale === "gl" ? "Inicio" : "Inicio",
+    description:
+      locale === "gl"
+        ? "Partidos, clasificación, equipos, novas e tenda oficial da U.D. Santiso F.C."
+        : "Partidos, clasificación, equipos, noticias y tienda oficial de la U.D. Santiso F.C.",
+  });
+}
 
 export default async function HomePage({
   params,
@@ -77,11 +96,11 @@ export default async function HomePage({
         <div className="hero__ticker">
           <div>
             <span>Senior</span><i />
-            <span>Feminino</span><i />
+            <span>{locale === "gl" ? "Feminino" : "Femenino"}</span><i />
             <span>Veteranos</span><i />
             <span>U.D. Santiso F.C.</span><i />
             <span>Senior</span><i />
-            <span>Feminino</span><i />
+            <span>{locale === "gl" ? "Feminino" : "Femenino"}</span><i />
             <span>Veteranos</span>
           </div>
         </div>
@@ -118,7 +137,9 @@ export default async function HomePage({
           <div className="split-feature__visual">
             <span>03</span>
             <p>{locale === "gl" ? "equipos do club" : "equipos del club"}</p>
-            <small>Senior · Feminino · Veteranos</small>
+            <small>
+              Senior · {locale === "gl" ? "Feminino" : "Femenino"} · Veteranos
+            </small>
           </div>
           <SectionHeading
             eyebrow={copy.home.pulseLabel}

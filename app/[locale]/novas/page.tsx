@@ -1,10 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { DataEmpty } from "@/components/data-empty";
 import { PageHero } from "@/components/page-hero";
 import { formatMatchDate } from "@/lib/format";
 import { readLocale } from "@/lib/locale";
+import { localizedMetadata } from "@/lib/metadata";
 import { getPosts } from "@/lib/public-data";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = await readLocale(params);
+
+  return localizedMetadata({
+    locale,
+    path: "novas",
+    title: locale === "gl" ? "Novas" : "Noticias",
+    description:
+      locale === "gl"
+        ? "Crónicas, anuncios e historias da U.D. Santiso F.C."
+        : "Crónicas, anuncios e historias de la U.D. Santiso F.C.",
+  });
+}
 
 export default async function NewsPage({
   params,

@@ -1,8 +1,28 @@
+import type { Metadata } from "next";
 import { Crest } from "@/components/crest";
 import { DataEmpty } from "@/components/data-empty";
 import { PageHero } from "@/components/page-hero";
 import { readLocale } from "@/lib/locale";
+import { localizedMetadata } from "@/lib/metadata";
 import { getRoster, getStaff } from "@/lib/public-data";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = await readLocale(params);
+
+  return localizedMetadata({
+    locale,
+    path: "equipos",
+    title: locale === "gl" ? "Equipos" : "Equipos",
+    description:
+      locale === "gl"
+        ? "Plantillas e corpos técnicos dos equipos Senior, Feminino e Veteranos."
+        : "Plantillas y cuerpos técnicos de los equipos Senior, Femenino y Veteranos.",
+  });
+}
 
 export default async function TeamsPage({
   params,

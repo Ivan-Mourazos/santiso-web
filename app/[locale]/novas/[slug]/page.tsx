@@ -5,6 +5,7 @@ import { Suspense, ViewTransition } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { formatMatchDate } from "@/lib/format";
 import { readLocale } from "@/lib/locale";
+import { localizedMetadata } from "@/lib/metadata";
 import { getPostBySlug } from "@/lib/public-data";
 import { siteConfig } from "@/lib/site";
 
@@ -21,10 +22,17 @@ export async function generateMetadata({
   const title = locale === "gl" ? post.title_gl : post.title_es;
   const description = locale === "gl" ? post.excerpt_gl : post.excerpt_es;
 
-  return {
+  const metadata = localizedMetadata({
+    locale,
+    path: `novas/${slug}`,
     title,
-    description,
+    description: description ?? title,
+  });
+
+  return {
+    ...metadata,
     openGraph: {
+      ...metadata.openGraph,
       title,
       description: description ?? undefined,
       type: "article",
@@ -46,7 +54,7 @@ export default function NewsDetailPage({
           <article className="article-page shell" aria-busy="true">
             <header>
               <p className="eyebrow">U.D. Santiso F.C.</p>
-              <h1>Cargando nova...</h1>
+              <h1>U.D. Santiso F.C.</h1>
             </header>
           </article>
         </ViewTransition>

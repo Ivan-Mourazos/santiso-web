@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from "next";
 import "../globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
-import { alternateLocale, locales, readLocale } from "@/lib/locale";
+import { locales, readLocale } from "@/lib/locale";
 import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -21,7 +21,6 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const locale = await readLocale(params);
-  const other = alternateLocale(locale);
 
   return {
     metadataBase: new URL(siteConfig.url),
@@ -37,13 +36,6 @@ export async function generateMetadata({
       type: "website",
       siteName: siteConfig.name,
       locale: locale === "gl" ? "gl_ES" : "es_ES",
-    },
-    alternates: {
-      canonical: `${siteConfig.url}/${locale}`,
-      languages: {
-        [locale]: `${siteConfig.url}/${locale}`,
-        [other]: `${siteConfig.url}/${other}`,
-      },
     },
   };
 }

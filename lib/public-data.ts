@@ -96,6 +96,14 @@ export type PublicProduct = {
   price_note_es: string | null;
   whatsapp_number: string | null;
   sort_order: number;
+  shop_product_variants: PublicProductVariant[];
+};
+
+export type PublicProductVariant = {
+  id: string;
+  label: string;
+  available: boolean;
+  sort_order: number;
 };
 
 export type PublicHonour = {
@@ -106,6 +114,19 @@ export type PublicHonour = {
   description_gl: string | null;
   description_es: string | null;
   category: string | null;
+  sort_order: number;
+};
+
+export type PublicClubPage = {
+  id: string;
+  slug: string;
+  title_gl: string;
+  title_es: string;
+  summary_gl: string | null;
+  summary_es: string | null;
+  body_gl: string | null;
+  body_es: string | null;
+  hero_image_url: string | null;
   sort_order: number;
 };
 
@@ -215,7 +236,16 @@ export async function getProducts(): Promise<PublicProduct[]> {
   cacheLife("minutes");
 
   return selectPublicView<PublicProduct>(
-    "shop_products?select=id,slug,name_gl,name_es,description_gl,description_es,image_urls,price_note_gl,price_note_es,whatsapp_number,sort_order&order=sort_order.asc",
+    "shop_products?select=id,slug,name_gl,name_es,description_gl,description_es,image_urls,price_note_gl,price_note_es,whatsapp_number,sort_order,shop_product_variants(id,label,available,sort_order)&shop_product_variants.available=eq.true&order=sort_order.asc",
+  );
+}
+
+export async function getClubPages(): Promise<PublicClubPage[]> {
+  "use cache";
+  cacheLife("hours");
+
+  return selectPublicView<PublicClubPage>(
+    "club_pages?select=id,slug,title_gl,title_es,summary_gl,summary_es,body_gl,body_es,hero_image_url,sort_order&order=sort_order.asc",
   );
 }
 

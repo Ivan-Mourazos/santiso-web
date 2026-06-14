@@ -1,9 +1,29 @@
+import type { Metadata } from "next";
 import { Crest } from "@/components/crest";
 import { DataEmpty } from "@/components/data-empty";
 import { PageHero } from "@/components/page-hero";
 import { categoryLabel } from "@/lib/format";
 import { readLocale } from "@/lib/locale";
+import { localizedMetadata } from "@/lib/metadata";
 import { getCompetitions, getStandings } from "@/lib/public-data";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = await readLocale(params);
+
+  return localizedMetadata({
+    locale,
+    path: "clasificacion",
+    title: locale === "gl" ? "Clasificacións" : "Clasificaciones",
+    description:
+      locale === "gl"
+        ? "Clasificacións actualizadas das competicións da U.D. Santiso F.C."
+        : "Clasificaciones actualizadas de las competiciones de la U.D. Santiso F.C.",
+  });
+}
 
 export default async function StandingsPage({
   params,
