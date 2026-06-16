@@ -65,12 +65,7 @@ export default async function ShopPage({
     <>
       <PageHero
         eyebrow={gl ? "Tenda oficial" : "Tienda oficial"}
-        title={gl ? "Viste as nosas cores." : "Viste nuestros colores."}
-        intro={
-          gl
-            ? "Escolle modelo e solicita talla, prezo e dispoñibilidade directamente por WhatsApp."
-            : "Elige modelo y consulta talla, precio y disponibilidad directamente por WhatsApp."
-        }
+        title={gl ? "Tenda" : "Tienda"}
       />
       <section className="section shell product-grid">
         {displayProducts.map((product, index) => (

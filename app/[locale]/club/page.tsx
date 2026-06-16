@@ -36,16 +36,7 @@ export default async function ClubPage({
     <>
       <PageHero
         eyebrow={gl ? "O noso club" : "Nuestro club"}
-        title={gl ? "Un escudo feito de persoas." : "Un escudo hecho de personas."}
-        intro={
-          clubPages.length > 0
-            ? gl
-              ? "Coñece a orixe, os valores, o campo e a memoria da U.D. Santiso F.C."
-              : "Conoce el origen, los valores, el campo y la memoria de la U.D. Santiso F.C."
-            : gl
-              ? "A historia completa está por escribir aquí. Este espazo reunirá orixe, valores, campo e trofeos da U.D. Santiso F.C."
-              : "La historia completa está por escribir aquí. Este espacio reunirá origen, valores, campo y trofeos de la U.D. Santiso F.C."
-        }
+        title={gl ? "O Club" : "El Club"}
       />
       <section className="section shell">
         <div className="value-grid">

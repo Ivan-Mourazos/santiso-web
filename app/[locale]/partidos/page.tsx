@@ -97,12 +97,7 @@ async function MatchesContent({
       />
       <PageHero
         eyebrow={gl ? "Calendario e resultados" : "Calendario y resultados"}
-        title={gl ? "Cada xornada conta." : "Cada jornada cuenta."}
-        intro={
-          gl
-            ? "A tempada 25/26 rematou. O calendario da nova tempada aparecerá aquí en canto estea confirmado."
-            : "La temporada 25/26 terminó. El calendario de la nueva temporada aparecerá aquí cuando esté confirmado."
-        }
+        title={gl ? "Partidos" : "Partidos"}
       />
       <section className="section shell sports-sections">
         {matches.length === 0 ? (

@@ -33,12 +33,7 @@ export default async function ContactPage({
     <>
       <PageHero
         eyebrow={gl ? "Contacto" : "Contacto"}
-        title={gl ? "Falamos?" : "¿Hablamos?"}
-        intro={
-          gl
-            ? "Para colaborar, patrocinar ou contactar co club. Engadiremos aquí as canles oficiais confirmadas."
-            : "Para colaborar, patrocinar o contactar con el club. Añadiremos aquí los canales oficiales confirmados."
-        }
+        title={gl ? "Contacto" : "Contacto"}
       />
       <section className="section shell contact-grid">
         <article>

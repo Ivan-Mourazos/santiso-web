@@ -11,7 +11,6 @@ export function Footer({ locale }: { locale: Locale }) {
       <div className="shell footer-grid">
         <div>
           <BrandMark locale={locale} />
-          <p className="footer-copy">{copy.footer.line}</p>
         </div>
         <div className="footer-links">
           <Link href={`/${locale}/club`}>{copy.nav.club}</Link>

@@ -73,12 +73,7 @@ async function StandingsContent({
     <>
       <PageHero
         eyebrow={gl ? "Competición" : "Competición"}
-        title={gl ? "Clasificacións claras." : "Clasificaciones claras."}
-        intro={
-          gl
-            ? "A clasificación calcúlase na base de datos para cargar ao instante e manter un criterio consistente."
-            : "La clasificación se calcula en la base de datos para cargar al instante y mantener un criterio consistente."
-        }
+        title={gl ? "Clasificación" : "Clasificación"}
       />
       <section className="section shell standings-stack">
         {standings.length === 0 ? (

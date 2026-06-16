@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Oswald } from "next/font/google";
 import "../globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
@@ -11,6 +11,13 @@ const inter = Inter({
   subsets: ["latin", "latin-ext"],
   display: "swap",
   variable: "--font-inter",
+});
+
+const oswald = Oswald({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  weight: ["400", "500", "700"],
+  variable: "--font-display",
 });
 
 export function generateStaticParams() {
@@ -57,8 +64,8 @@ export default async function LocaleLayout({
   const locale = await readLocale(params);
 
   return (
-    <html lang={locale}>
-      <body className={inter.variable}>
+    <html lang={locale} suppressHydrationWarning>
+      <body className={`${inter.variable} ${oswald.variable}`}>
         <div className="site-frame" data-locale={locale}>
           <a className="skip-link" href="#main-content">
             {locale === "gl" ? "Saltar ao contido" : "Saltar al contenido"}

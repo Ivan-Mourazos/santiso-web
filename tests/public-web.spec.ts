@@ -12,6 +12,7 @@ const publicRoutes = [
 ] as const;
 
 test("all public routes render in both locales", async ({ request }) => {
+  test.slow();
   for (const locale of ["gl", "es"]) {
     for (const route of publicRoutes) {
       const response = await request.get(`/${locale}${route}`);

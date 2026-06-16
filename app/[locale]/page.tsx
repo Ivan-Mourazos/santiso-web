@@ -77,7 +77,6 @@ export default async function HomePage({
               <span>{copy.home.titleA}</span>
               <strong>{copy.home.titleB}</strong>
             </h1>
-            <p className="hero__intro">{copy.home.intro}</p>
             <div className="hero__actions">
               <Link className="button" href={`/${locale}/partidos`}>
                 {copy.common.matches}
@@ -110,7 +109,6 @@ export default async function HomePage({
         <SectionHeading
           eyebrow={copy.home.seasonLabel}
           title={copy.home.seasonTitle}
-          body={copy.home.seasonBody}
         />
         <div className="team-grid">
           {teams.map(([name, description], index) => (
@@ -144,7 +142,6 @@ export default async function HomePage({
           <SectionHeading
             eyebrow={copy.home.pulseLabel}
             title={copy.home.pulseTitle}
-            body={copy.home.pulseBody}
           />
         </div>
       </section>
@@ -156,11 +153,6 @@ export default async function HomePage({
             locale === "gl"
               ? "O marcador conta unha parte."
               : "El marcador cuenta una parte."
-          }
-          body={
-            locale === "gl"
-              ? "Consulta os últimos partidos dos tres equipos do club."
-              : "Consulta los últimos partidos de los tres equipos del club."
           }
         />
         <div className="home-results">
@@ -189,7 +181,6 @@ export default async function HomePage({
         <div>
           <p className="eyebrow">{copy.nav.shop}</p>
           <h2>{copy.home.shopTitle}</h2>
-          <p>{copy.home.shopBody}</p>
         </div>
         <Link className="button button--dark" href={`/${locale}/tenda`}>
           {copy.common.shop}

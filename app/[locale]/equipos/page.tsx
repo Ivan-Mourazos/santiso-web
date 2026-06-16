@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CategoryTabs } from "@/components/category-tabs";
-import { Crest } from "@/components/crest";
 import { DataEmpty } from "@/components/data-empty";
 import { PageHero } from "@/components/page-hero";
+import { PlayerCarousel } from "@/components/player-carousel";
 import { readLocale } from "@/lib/locale";
 import { localizedMetadata } from "@/lib/metadata";
 import { getRoster, getStaff } from "@/lib/public-data";
@@ -82,12 +82,7 @@ async function TeamsContent({
     <>
       <PageHero
         eyebrow={gl ? "Os equipos" : "Los equipos"}
-        title={gl ? "Un club, tres vestiarios." : "Un club, tres vestuarios."}
-        intro={
-          gl
-            ? "Plantillas, corpos técnicos e protagonistas de cada categoría."
-            : "Plantillas, cuerpos técnicos y protagonistas de cada categoría."
-        }
+        title={gl ? "Equipos" : "Equipos"}
       />
       <section className="section shell roster-list">
         {roster.length === 0 ? (
@@ -124,23 +119,7 @@ async function TeamsContent({
                   {players.length} {gl ? "xogadores" : "jugadores"}
                 </small>
               </header>
-              <div className="player-grid">
-                {players.map((player) => (
-                  <article className="player-card" key={player.id}>
-                    <div className="player-card__photo">
-                      <Crest
-                        src={player.foto_url}
-                        name={player.apodo ?? player.nombre}
-                        size={180}
-                      />
-                      <span>{player.dorsal ?? "—"}</span>
-                    </div>
-                    <p>{player.posicion ?? (gl ? "Xogador" : "Jugador")}</p>
-                    <h3>{player.apodo ?? player.nombre}</h3>
-                    {player.capitan ? <small>{gl ? "Capitán" : "Capitán"}</small> : null}
-                  </article>
-                ))}
-              </div>
+              <PlayerCarousel players={players} locale={locale} />
               {coaches.length > 0 ? (
                 <div className="staff-strip">
                   {coaches.map((member) => (

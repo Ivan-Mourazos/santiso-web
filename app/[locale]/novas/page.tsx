@@ -39,12 +39,7 @@ export default async function NewsPage({
     <>
       <PageHero
         eyebrow={gl ? "Actualidade" : "Actualidad"}
-        title={gl ? "Novas do Santiso." : "Noticias del Santiso."}
-        intro={
-          gl
-            ? "Crónicas, anuncios e historias do club vivirán aquí."
-            : "Crónicas, anuncios e historias del club vivirán aquí."
-        }
+        title={gl ? "Novas" : "Noticias"}
       />
       <section className="section shell">
         {posts.length === 0 ? (

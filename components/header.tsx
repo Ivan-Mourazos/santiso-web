@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { BrandMark } from "@/components/brand-mark";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { MobileMenu } from "@/components/mobile-menu";
 import { RouteNav } from "@/components/route-nav";
 import { getContent } from "@/lib/content";
 import { alternateLocale, type Locale } from "@/lib/locale";
@@ -58,12 +59,27 @@ export function Header({ locale }: { locale: Locale }) {
           <Link className="button button--small" href={`/${locale}/contacto`}>
             {copy.nav.contact}
           </Link>
-          <details className="mobile-menu">
-            <summary aria-label={copy.common.openMenu}>
-              <span />
-              <span />
-            </summary>
-            <div className="mobile-menu__panel">
+          <Suspense
+            fallback={
+              <details className="mobile-menu">
+                <summary aria-label={copy.common.openMenu}>
+                  <span />
+                  <span />
+                </summary>
+                <div className="mobile-menu__panel">
+                  <nav aria-label={copy.common.mobileNavigation}>
+                    {links.map(([href, text]) => (
+                      <Link href={`/${locale}/${href}`} key={href}>
+                        {text}
+                      </Link>
+                    ))}
+                  </nav>
+                  <Link href={`/${locale}/contacto`}>{copy.nav.contact}</Link>
+                </div>
+              </details>
+            }
+          >
+            <MobileMenu openLabel={copy.common.openMenu}>
               <Suspense
                 fallback={
                   <nav aria-label={copy.common.mobileNavigation}>
@@ -83,8 +99,8 @@ export function Header({ locale }: { locale: Locale }) {
                 />
               </Suspense>
               <Link href={`/${locale}/contacto`}>{copy.nav.contact}</Link>
-            </div>
-          </details>
+            </MobileMenu>
+          </Suspense>
         </div>
       </div>
     </header>
