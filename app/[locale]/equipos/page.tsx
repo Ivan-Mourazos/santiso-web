@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { CategoryTabs } from "@/components/category-tabs";
 import { Crest } from "@/components/crest";
 import { DataEmpty } from "@/components/data-empty";
@@ -25,7 +26,21 @@ export async function generateMetadata({
   });
 }
 
-export default async function TeamsPage({
+export default function TeamsPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ equipo?: string }>;
+}) {
+  return (
+    <Suspense fallback={null}>
+      <TeamsContent params={params} searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function TeamsContent({
   params,
   searchParams,
 }: {

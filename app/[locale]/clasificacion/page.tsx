@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { CategoryTabs } from "@/components/category-tabs";
 import { Crest } from "@/components/crest";
 import { DataEmpty } from "@/components/data-empty";
@@ -26,7 +27,21 @@ export async function generateMetadata({
   });
 }
 
-export default async function StandingsPage({
+export default function StandingsPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ categoria?: string }>;
+}) {
+  return (
+    <Suspense fallback={null}>
+      <StandingsContent params={params} searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function StandingsContent({
   params,
   searchParams,
 }: {

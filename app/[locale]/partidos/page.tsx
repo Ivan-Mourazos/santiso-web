@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { CategoryTabs } from "@/components/category-tabs";
 import { DataEmpty } from "@/components/data-empty";
@@ -29,7 +30,21 @@ export async function generateMetadata({
   });
 }
 
-export default async function MatchesPage({
+export default function MatchesPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ categoria?: string; todos?: string }>;
+}) {
+  return (
+    <Suspense fallback={null}>
+      <MatchesContent params={params} searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function MatchesContent({
   params,
   searchParams,
 }: {

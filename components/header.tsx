@@ -22,7 +22,19 @@ export function Header({ locale }: { locale: Locale }) {
     <header className="site-header">
       <div className="site-header__inner shell">
         <BrandMark locale={locale} />
-        <RouteNav label={copy.common.navigation} links={links} locale={locale} />
+        <Suspense
+          fallback={
+            <nav aria-label={copy.common.navigation} className="desktop-nav">
+              {links.map(([href, text]) => (
+                <Link href={`/${locale}/${href}`} key={href}>
+                  {text}
+                </Link>
+              ))}
+            </nav>
+          }
+        >
+          <RouteNav label={copy.common.navigation} links={links} locale={locale} />
+        </Suspense>
         <div className="header-actions">
           <Suspense
             fallback={
@@ -52,12 +64,24 @@ export function Header({ locale }: { locale: Locale }) {
               <span />
             </summary>
             <div className="mobile-menu__panel">
-              <RouteNav
-                label={copy.common.mobileNavigation}
-                links={links}
-                locale={locale}
-                mobile
-              />
+              <Suspense
+                fallback={
+                  <nav aria-label={copy.common.mobileNavigation}>
+                    {links.map(([href, text]) => (
+                      <Link href={`/${locale}/${href}`} key={href}>
+                        {text}
+                      </Link>
+                    ))}
+                  </nav>
+                }
+              >
+                <RouteNav
+                  label={copy.common.mobileNavigation}
+                  links={links}
+                  locale={locale}
+                  mobile
+                />
+              </Suspense>
               <Link href={`/${locale}/contacto`}>{copy.nav.contact}</Link>
             </div>
           </details>
